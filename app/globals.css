@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+:root {
+  --riwi-green: #5ACCA4;
+  --riwi-yellow: #E6CA52;
+  --riwi-purple: #EAA2FC;
+  --riwi-orange: #FF6655;
+  --riwi-violet: #985DFF;
+}
