@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Input } from '../../components/ui/Input'
-import { Button } from '../../components/ui/Button'
-import { Select } from '../../components/ui/Select'
+import { Input } from "@/components/ui/Input"
+import { Button } from '@/components/ui/Button'
+import { Select } from '@/components/ui/Select'
 
 const locationOptions = [
     { value: 'barranquilla', label: 'Barranquilla' },
