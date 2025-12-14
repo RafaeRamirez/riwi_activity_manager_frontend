@@ -1,53 +1,96 @@
 // components/eventos/EventList.tsx
+'use client';
 
+import { useState } from 'react';
 import { EventCard } from './EventCard';
+import { EventoModal } from './EventModal';
 import type { Event, EventAgroup } from '@/types/event';
 
 interface EventListProps {
   eventos: Event[];
+  eventosInscritos: string[];
+  onInscribir: (eventoId: string) => void;
+  onDesinscribir: (eventoId: string) => void;
 }
 
-export function EventList({ eventos }: EventListProps) {
+export function EventList({ eventos, eventosInscritos, onInscribir, onDesinscribir }: EventListProps) {
+  const [eventoSeleccionado, setEventoSeleccionado] = useState<Event | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   // Agrupar eventos por mes
   const eventosAgrupados = agruparEventosPorMes(eventos);
 
-  return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-xl font-bold mb-4">Próximos Eventos</h2>
-      
-      <div className="space-y-8 max-h-[600px] overflow-y-auto pr-2">
-        {eventosAgrupados.map((grupo, idx) => (
-          <div key={idx}>
-            <h3 className="text-lg font-semibold text-purple-600 italic mb-4">
-              {grupo.mes.toUpperCase()} {grupo.anio}
-            </h3>
-            
-            {grupo.eventos.map((dia, diaIdx) => (
-              <div key={diaIdx} className="mb-6">
-                <div className="flex gap-4">
-                  {/* Fecha destacada */}
-                  <div className="flex flex-col items-center w-16 flex-shrink-0">
-                    <span className="text-yellow-500 text-sm font-medium">
-                      {dia.diaSemana}
-                    </span>
-                    <span className="text-4xl font-bold text-orange-500">
-                      {dia.dia}
-                    </span>
-                  </div>
+  const handleInscribir = async (eventoId: string) => {
+    setIsLoading(true);
+    await onInscribir(eventoId);
+    setIsLoading(false);
+    setEventoSeleccionado(null);
+  };
 
-                  {/* Eventos del día */}
-                  <div className="flex-1 space-y-3">
-                    {dia.eventos.map((event) => (
-                      <EventCard key={event.id} evento={event} />
-                    ))}
+  const handleDesinscribir = async (eventoId: string) => {
+    setIsLoading(true);
+    await onDesinscribir(eventoId);
+    setIsLoading(false);
+    setEventoSeleccionado(null);
+  };
+
+  return (
+    <>
+      <div className="bg-white rounded-lg shadow-sm p-6">
+        <h2 className="text-xl font-bold mb-4">Próximos Eventos</h2>
+        
+        <div className="space-y-8 max-h-[600px] overflow-y-auto pr-2">
+          {eventosAgrupados.map((grupo, idx) => (
+            <div key={idx}>
+              <h3 className="text-lg font-semibold text-purple-600 italic mb-4">
+                {grupo.mes.toUpperCase()} {grupo.anio}
+              </h3>
+              
+              {grupo.eventos.map((dia, diaIdx) => (
+                <div key={diaIdx} className="mb-6">
+                  <div className="flex gap-4">
+                    {/* Fecha destacada */}
+                    <div className="flex flex-col items-center w-16 flex-shrink-0">
+                      <span className="text-yellow-500 text-sm font-medium">
+                        {dia.diaSemana}
+                      </span>
+                      <span className="text-4xl font-bold text-orange-500">
+                        {dia.dia}
+                      </span>
+                    </div>
+
+                    {/* Eventos del día */}
+                    <div className="flex-1 space-y-3">
+                      {dia.eventos.map((evento) => (
+                        <EventCard 
+                          key={evento.id} 
+                          evento={evento}
+                          isInscrito={eventosInscritos.includes(evento.id)}
+                          onClick={() => setEventoSeleccionado(evento)}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ))}
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+
+      {/* Modal de detalle */}
+      {eventoSeleccionado && (
+        <EventoModal
+          evento={eventoSeleccionado}
+          isOpen={true}
+          onClose={() => setEventoSeleccionado(null)}
+          onInscribir={handleInscribir}
+          onDesinscribir={handleDesinscribir}
+          isInscrito={eventosInscritos.includes(eventoSeleccionado.id)}
+          isLoading={isLoading}
+        />
+      )}
+    </>
   );
 }
 

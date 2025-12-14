@@ -6,10 +6,11 @@ import type { Event } from '@/types/event';
 
 interface EventFiltersProps {
   eventos: Event[];
+  eventosInscritos: string[];
   onFilter: (filtered: Event[]) => void;
 }
 
-export function EventFilters({ eventos, onFilter }: EventFiltersProps) {
+export function EventFilters({ eventos, eventosInscritos, onFilter }: EventFiltersProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleBuscarEventos = () => {
@@ -22,7 +23,7 @@ export function EventFilters({ eventos, onFilter }: EventFiltersProps) {
 
   const handleEventosInscritos = () => {
     const filtered = eventos.filter(evento => 
-      evento.inscritos && evento.inscritos > 0
+      eventosInscritos.includes(evento.id)
     );
     onFilter(filtered);
   };
@@ -43,6 +44,7 @@ export function EventFilters({ eventos, onFilter }: EventFiltersProps) {
           placeholder="Buscar eventos..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && handleBuscarEventos()}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
 
@@ -57,9 +59,14 @@ export function EventFilters({ eventos, onFilter }: EventFiltersProps) {
         {/* Botón Eventos Inscritos */}
         <button
           onClick={handleEventosInscritos}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
         >
-          Eventos Inscritos
+          <span>Eventos Inscritos</span>
+          {eventosInscritos.length > 0 && (
+            <span className="bg-white text-orange-600 rounded-full px-2 py-0.5 text-xs font-bold">
+              {eventosInscritos.length}
+            </span>
+          )}
         </button>
 
         {/* Botón Reset */}

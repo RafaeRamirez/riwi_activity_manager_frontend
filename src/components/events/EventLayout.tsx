@@ -12,18 +12,45 @@ interface EventosLayoutProps {
   userName: string;
   userInitials: string;
   userRole: UserRole;
+  eventosInscritosIniciales?: string[];
+  onInscribir?: (eventoId: string) => Promise<void>;
+  onDesinscribir?: (eventoId: string) => Promise<void>;
 }
 
 export function EventosLayout({ 
   eventos, 
   userName, 
   userInitials, 
-  userRole 
+  userRole,
+  eventosInscritosIniciales = [],
+  onInscribir,
+  onDesinscribir
 }: EventosLayoutProps) {
   const [filteredEventos, setFilteredEventos] = useState<Event[]>(eventos);
+  const [eventosInscritos, setEventosInscritos] = useState<string[]>(eventosInscritosIniciales);
 
   const handleFilter = (filtered: Event[]) => {
     setFilteredEventos(filtered);
+  };
+
+  const handleInscribir = async (eventoId: string) => {
+    // Llamar a la función externa si existe
+    if (onInscribir) {
+      await onInscribir(eventoId);
+    }
+    
+    // Actualizar estado local
+    setEventosInscritos(prev => [...prev, eventoId]);
+  };
+
+  const handleDesinscribir = async (eventoId: string) => {
+    // Llamar a la función externa si existe
+    if (onDesinscribir) {
+      await onDesinscribir(eventoId);
+    }
+    
+    // Actualizar estado local
+    setEventosInscritos(prev => prev.filter(id => id !== eventoId));
   };
 
   return (
@@ -50,13 +77,19 @@ export function EventosLayout({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Lista de eventos */}
           <div className="lg:col-span-2">
-            <EventList eventos={filteredEventos} />
+            <EventList 
+              eventos={filteredEventos}
+              eventosInscritos={eventosInscritos}
+              onInscribir={handleInscribir}
+              onDesinscribir={handleDesinscribir}
+            />
           </div>
 
           {/* Panel de filtros */}
           <div className="lg:col-span-1">
             <EventFilters 
-              eventos={eventos} 
+              eventos={eventos}
+              eventosInscritos={eventosInscritos}
               onFilter={handleFilter} 
             />
           </div>

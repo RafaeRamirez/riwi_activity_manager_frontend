@@ -1,12 +1,15 @@
 // components/eventos/EventCard.tsx
+'use client';
 
 import type { Event } from '@/types/event';
 
 interface EventCardProps {
   evento: Event;
+  isInscrito?: boolean;
+  onClick?: () => void;
 }
 
-export function EventCard({ evento }: EventCardProps) {
+export function EventCard({ evento, isInscrito = false, onClick }: EventCardProps) {
   const fecha = new Date(evento.fecha);
   const fechaFormato = fecha.toLocaleDateString('es-ES', { 
     day: '2-digit', 
@@ -14,9 +17,24 @@ export function EventCard({ evento }: EventCardProps) {
   });
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+    <div 
+      onClick={onClick}
+      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all cursor-pointer hover:border-purple-300 relative"
+    >
+      {/* Badge de inscrito */}
+      {isInscrito && (
+        <div className="absolute top-3 right-3">
+          <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-1 rounded-full">
+            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            Inscrito
+          </span>
+        </div>
+      )}
+
       <div className="flex items-start justify-between mb-2">
-        <div className="flex-1">
+        <div className="flex-1 pr-20">
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
             <span>{fechaFormato}</span>
           </div>
@@ -25,7 +43,7 @@ export function EventCard({ evento }: EventCardProps) {
           
           {evento.ubicacion && (
             <p className="text-sm text-gray-600 mb-1">
-              {evento.ubicacion} • Sala {evento.sala}
+              {evento.ubicacion} {evento.sala && `• Sala ${evento.sala}`}
             </p>
           )}
 
