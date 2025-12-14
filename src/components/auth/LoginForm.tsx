@@ -103,7 +103,7 @@ export function LoginForm() {
                     type="submit"
                     fullWidth
                     isLoading={isLoading}
-                    className="mt-6 bg-[var(--riwi-violet)] text-white hover:bg-primary-dark active:scale-95"
+                    className="mt-6 bg-riwi-violet text-white hover:bg-primary-dark active:scale-95"
                 >
                     Sing In
                 </Button>

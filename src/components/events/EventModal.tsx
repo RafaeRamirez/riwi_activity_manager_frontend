@@ -58,10 +58,10 @@ export function EventoModal({
   const estaLleno = lugaresDisponibles <= 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-riwi-violet to-purple-700 p-6 text-white rounded-t-lg">
+        <div className="bg-linear-to-br from-riwi-violet to-purple-700 p-6 text-white rounded-t-lg">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <h2 className="text-2xl font-bold mb-2">{evento.titulo}</h2>
@@ -96,7 +96,7 @@ export function EventoModal({
           {/* Estado de inscripción */}
           {isInscrito && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3">
-              <svg className="w-6 h-6 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>
@@ -132,7 +132,7 @@ export function EventoModal({
           <div className="space-y-3">
             {evento.ubicacion && (
               <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-gray-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-gray-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>

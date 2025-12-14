@@ -201,7 +201,7 @@ export function RegisterForm() {
                     type="submit"
                     fullWidth
                     isLoading={isLoading}
-                    className="mt-6 bg-[var(--riwi-violet)]"
+                    className="mt-6 bg-riwi-violet"
                 >
                     Create Account
                 </Button>

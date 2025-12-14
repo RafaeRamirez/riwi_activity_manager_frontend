@@ -50,7 +50,7 @@ export function EventList({ eventos, eventosInscritos, onInscribir, onDesinscrib
                 <div key={diaIdx} className="mb-5">
                   <div className="flex gap-3">
                     {/* Fecha destacada */}
-                    <div className="flex flex-col items-center w-16 flex-shrink-0">
+                    <div className="flex flex-col items-center w-16 shrink-0">
                       <span className="text-riwi-yellow text-lg font-medium h-5">
                         {dia.diaSemana}
                       </span>

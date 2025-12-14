@@ -36,7 +36,7 @@ export function UserHeader({ nombre, iniciales, role }: UserHeaderProps) {
   };
 
   return (
-    <div className="bg-gradient-to-r from-riwi-violet to-purple-500 rounded-lg shadow-lg p-6 mb-6 flex items-center justify-between">
+    <div className="bg-linear-to-r from-riwi-violet to-purple-500 rounded-lg shadow-lg p-6 mb-6 flex items-center justify-between">
       <h1 className="text-2xl font-bold text-white">
         {nombre}
       </h1>
