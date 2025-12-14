@@ -61,7 +61,7 @@ export function EventoModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-6 text-white rounded-t-lg">
+        <div className="bg-gradient-to-r from-riwi-violet to-purple-700 p-6 text-white rounded-t-lg">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <h2 className="text-2xl font-bold mb-2">{evento.titulo}</h2>
@@ -109,7 +109,7 @@ export function EventoModal({
           {/* Información de capacidad */}
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-riwi-violet" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               <span className="font-semibold text-gray-700">
@@ -117,12 +117,12 @@ export function EventoModal({
               </span>
             </div>
             {!estaLleno && (
-              <span className="text-green-600 font-medium">
+              <span className="text-green-500 font-medium">
                 {lugaresDisponibles} lugares disponibles
               </span>
             )}
             {estaLleno && !isInscrito && (
-              <span className="text-red-600 font-medium">
+              <span className="text-red-500 font-medium">
                 ¡Evento lleno!
               </span>
             )}
@@ -170,7 +170,7 @@ export function EventoModal({
         <div className="bg-gray-50 px-6 py-4 rounded-b-lg flex gap-3 justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            className="px-4 py-2 text-gray-700 bg-gray-300 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
           >
             Volver
           </button>
@@ -179,7 +179,7 @@ export function EventoModal({
             <button
               onClick={() => onDesinscribir(evento.id)}
               disabled={isLoading}
-              className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Procesando...' : 'Desinscribirse'}
             </button>
@@ -187,7 +187,7 @@ export function EventoModal({
             <button
               onClick={() => onInscribir(evento.id)}
               disabled={estaLleno || isLoading}
-              className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-riwi-violet text-white rounded-lg hover:bg-purple-500 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Procesando...' : estaLleno ? 'Evento lleno' : 'Inscribirse'}
             </button>

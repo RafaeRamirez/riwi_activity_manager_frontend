@@ -51,7 +51,7 @@ export function EventFilters({ eventos, eventosInscritos, onFilter }: EventFilte
         {/* Botón Buscar Eventos */}
         <button
           onClick={handleBuscarEventos}
-          className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+          className="w-full bg-riwi-violet hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
         >
           Buscar Eventos
         </button>
@@ -59,11 +59,11 @@ export function EventFilters({ eventos, eventosInscritos, onFilter }: EventFilte
         {/* Botón Eventos Inscritos */}
         <button
           onClick={handleEventosInscritos}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+          className="w-full bg-riwi-orange hover:bg-orange-300 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
         >
           <span>Eventos Inscritos</span>
           {eventosInscritos.length > 0 && (
-            <span className="bg-white text-orange-600 rounded-full px-2 py-0.5 text-xs font-bold">
+            <span className="bg-white text-riwi-orange rounded-full px-2 py-0.5 text-xs font-bold">
               {eventosInscritos.length}
             </span>
           )}
@@ -72,7 +72,7 @@ export function EventFilters({ eventos, eventosInscritos, onFilter }: EventFilte
         {/* Botón Reset */}
         <button
           onClick={handleReset}
-          className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+          className="w-full bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors text-sm"
         >
           Limpiar filtros
         </button>

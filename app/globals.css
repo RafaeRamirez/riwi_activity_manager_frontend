@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@theme {
+  --color-riwi-green: #5ACCA4;
+  --color-riwi-yellow: #E6CA52;
+  --color-riwi-purple: #EAA2FC;
+  --color-riwi-orange: #FF6655;
+  --color-riwi-violet: #985DFF;
+}
+
 :root {
   --riwi-green: #5ACCA4;
   --riwi-yellow: #E6CA52;

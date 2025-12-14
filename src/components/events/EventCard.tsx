@@ -62,7 +62,7 @@ export function EventCard({ evento, isInscrito = false, onClick }: EventCardProp
         {evento.capacidad && (
           <div className="flex items-center gap-2 ml-4">
             <svg 
-              className="w-5 h-5 text-purple-600" 
+              className="w-5 h-5 text-riwi-violet" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
@@ -74,7 +74,7 @@ export function EventCard({ evento, isInscrito = false, onClick }: EventCardProp
                 d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" 
               />
             </svg>
-            <span className="font-semibold text-purple-600">
+            <span className="font-semibold text-riwi-violet">
               {evento.inscritos || 0}
             </span>
           </div>

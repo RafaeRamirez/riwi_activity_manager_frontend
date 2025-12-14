@@ -19,9 +19,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={ubuntu.variable}>
+    <html lang="en" >
       <body
-        className="font-ubuntu"
+        className={ubuntu.className}
       >
         {children}
       </body>

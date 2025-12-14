@@ -36,7 +36,7 @@ export function UserHeader({ nombre, iniciales, role }: UserHeaderProps) {
   };
 
   return (
-    <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg shadow-lg p-6 mb-6 flex items-center justify-between">
+    <div className="bg-gradient-to-r from-riwi-violet to-purple-500 rounded-lg shadow-lg p-6 mb-6 flex items-center justify-between">
       <h1 className="text-2xl font-bold text-white">
         {nombre}
       </h1>
@@ -45,7 +45,7 @@ export function UserHeader({ nombre, iniciales, role }: UserHeaderProps) {
       <div className="relative" ref={menuRef}>
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="w-12 h-12 rounded-full bg-orange-400 flex items-center justify-center text-white font-bold text-lg hover:bg-orange-500 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-600"
+          className="w-12 h-12 rounded-full bg-riwi-orange flex items-center justify-center text-white font-bold text-lg hover:bg-riwi-yellow transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-600"
         >
           {iniciales}
         </button>

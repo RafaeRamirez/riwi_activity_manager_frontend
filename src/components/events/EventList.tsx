@@ -42,19 +42,19 @@ export function EventList({ eventos, eventosInscritos, onInscribir, onDesinscrib
         <div className="space-y-8 max-h-[600px] overflow-y-auto pr-2">
           {eventosAgrupados.map((grupo, idx) => (
             <div key={idx}>
-              <h3 className="text-lg font-semibold text-purple-600 italic mb-4">
+              <h3 className="text-lg font-bold text-riwi-violet italic mb-4">
                 {grupo.mes.toUpperCase()} {grupo.anio}
               </h3>
               
               {grupo.eventos.map((dia, diaIdx) => (
-                <div key={diaIdx} className="mb-6">
-                  <div className="flex gap-4">
+                <div key={diaIdx} className="mb-5">
+                  <div className="flex gap-3">
                     {/* Fecha destacada */}
                     <div className="flex flex-col items-center w-16 flex-shrink-0">
-                      <span className="text-yellow-500 text-sm font-medium">
+                      <span className="text-riwi-yellow text-lg font-medium h-5">
                         {dia.diaSemana}
                       </span>
-                      <span className="text-4xl font-bold text-orange-500">
+                      <span className="text-4xl font-bold text-riwi-orange">
                         {dia.dia}
                       </span>
                     </div>
