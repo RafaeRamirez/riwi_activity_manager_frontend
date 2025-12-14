@@ -63,3 +63,18 @@ alert(`Registro con ${provider} - Pendiente de integración`)
 
 // Por:
 signIn(provider, { callbackUrl: '/dashboard' })
+
+
+
+
+
+
+
+Coder:
+          id: '4',
+          nombre: 'Ana Martínez',
+          email: 'ana.martinez@riwi.io',
+          sede: 'Medellín',
+          cohorte: 'Cohorte 15',
+          fechaIngreso: new Date('2024-01-15'),
+          telefono: '+57 303 456 7890'

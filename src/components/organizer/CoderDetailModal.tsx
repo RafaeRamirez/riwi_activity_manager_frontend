@@ -70,7 +70,7 @@ export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalP
   const faltas = historial.filter(e => !e.asistio).length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="bg-linear-to-r from-riwi-green to-riwi-yellow p-6 text-white">

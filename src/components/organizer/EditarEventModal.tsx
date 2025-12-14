@@ -60,7 +60,7 @@ export function EditarEventoModal({ evento, onClose, onSave }: EditarEventoModal
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-blue-500 p-6 text-white rounded-t-lg flex items-center justify-between">
