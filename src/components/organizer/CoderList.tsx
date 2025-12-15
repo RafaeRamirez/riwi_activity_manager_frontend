@@ -1,4 +1,3 @@
-// components/organizador/CodersList.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
