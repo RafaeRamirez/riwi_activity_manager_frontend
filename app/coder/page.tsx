@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { EventosLayout } from '@/components/events/EventLayout';
 import { eventosAPI, codersAPI } from '@/lib/api/apiService';
 import type { Event } from '@/types/event';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function CoderPage() {
     const [eventos, setEventos] = useState<Event[]>([]);
@@ -14,7 +16,7 @@ export default function CoderPage() {
 
     // TODO: Reemplazar con el ID del usuario autenticado (del contexto/sesión)
     const CURRENT_USER_ID = 'USER_ID_FROM_AUTH'; // Obtener de tu sistema de auth
-    // const { user } = useAuth();
+    const { user } = useAuth();
     // Cargar datos iniciales
     useEffect(() => {
         cargarDatosIniciales();
@@ -158,14 +160,16 @@ export default function CoderPage() {
 
     // Renderizado principal
     return (
-        <EventosLayout
-            eventos={eventos}
-            userName={user.sede} // TODO: Obtener del usuario autenticado
-            userInitials={user.iniciales}        // TODO: Obtener del usuario autenticado
-            userRole={user.rol}   // TODO: Obtener del usuario autenticado
-            eventosInscritosIniciales={eventosInscritos}
-            onInscribir={handleInscribir}
-            onDesinscribir={handleDesinscribir}
-        />
+        <ProtectedRoute allowedRoles={['coder']}>
+            <EventosLayout
+                eventos={eventos}
+                userName={user?.sede || 'Sede'}
+                userInitials={user?.iniciales || 'US'}
+                userRole="coder"
+                eventosInscritosIniciales={eventosInscritos}
+                onInscribir={handleInscribir}
+                onDesinscribir={handleDesinscribir}
+            />
+        </ProtectedRoute>
     );
 }

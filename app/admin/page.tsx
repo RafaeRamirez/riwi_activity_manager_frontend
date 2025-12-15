@@ -1,16 +1,19 @@
+'use client';
+
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function AdminPage() {
-  return (
-    <AdminDashboard
-      userName="Admin Riwi"
-      userInitials="AR"
-      userRole="admin"
-    />
-  );
-}
+    const { user } = useAuth();
 
-export const metadata = {
-  title: 'Dashboard - Admin',
-  description: 'Panel de control del administrador',
-};
+    return (
+        <ProtectedRoute allowedRoles={['admin']}>
+            <AdminDashboard
+                userName={user?.nombre || 'Admin'}
+                userInitials={user?.iniciales || 'AD'}
+                userRole="admin"
+            />
+        </ProtectedRoute>
+    );
+}

@@ -71,12 +71,12 @@ export function OrganizerDashboard({
                                 className="w-full h-full object-cover"
                             />
                             <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent flex items-end">
-                                <h3 className="text-white text-2xl font-bold p-4">Eventos</h3>
+                                <h3 className="text-white text-2xl font-bold p-4">Events</h3>
                             </div>
                         </div>
                     </button>
 
-                    {/* Card Crear Evento */}
+                    {/* Card Create Event */}
                     <button
                         onClick={() => handleSectionClick('crear')}
                         className={`bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg md:col-span-2 lg:col-span-1 ${activeSection === 'crear' ? 'ring-4 ring-riwi-violet' : ''
@@ -87,13 +87,13 @@ export function OrganizerDashboard({
                                 <svg className="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                 </svg>
-                                <h3 className="text-2xl font-bold">Crear Evento</h3>
+                                <h3 className="text-2xl font-bold">Create Event</h3>
                             </div>
                         </div>
                     </button>
                 </div>
 
-                {/* Contenido dinámico según la sección activa */}
+                {/* Dynamic content based on the active section */}
                 <div className="transition-all duration-300">
                     {activeSection === 'coders' && <CodersList sede={sede} />}
                     {activeSection === 'eventos' && <EventosManager sede={sede} />}

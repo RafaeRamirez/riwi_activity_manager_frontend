@@ -1,17 +1,14 @@
-// components/eventos/UserHeader.tsx
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import type { UserHeaderProps } from '@/types/event';
-import { useRouter } from 'next/navigation';
-
-
 
 export function UserHeader({ nombre, iniciales, role }: UserHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { logout } = useAuth(); // Hook de autenticación
 
-  // Cerrar menú al hacer click fuera
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -28,15 +25,15 @@ export function UserHeader({ nombre, iniciales, role }: UserHeaderProps) {
     };
   }, [isMenuOpen]);
 
-  const handleLogout = () => {
-    const router = useRouter();
-    console.log('Cerrando sesión...');
-    localStorage.removeItem('user');
-    router.push('/login');
+  const handleLogout = async () => {
+    if (confirm('¿Estás seguro de cerrar sesión?')) {
+      console.log('🔄 Cerrando sesión...');
+      await logout();
+    }
   };
 
   return (
-    <div className="bg-linear-to-r from-riwi-violet to-purple-500 rounded-lg shadow-lg p-6 mb-6 flex items-center justify-between">
+    <div className="bg-linear-to-r from-riwi-violet to-riwi-purple rounded-lg shadow-lg p-6 mb-6 flex items-center justify-between">
       <h1 className="text-2xl font-bold text-white">
         {nombre}
       </h1>
@@ -45,7 +42,7 @@ export function UserHeader({ nombre, iniciales, role }: UserHeaderProps) {
       <div className="relative" ref={menuRef}>
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="w-12 h-12 rounded-full bg-riwi-orange flex items-center justify-center text-white font-bold text-lg hover:bg-riwi-yellow transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-purple-600"
+          className="w-12 h-12 rounded-full bg-riwi-orange flex items-center justify-center text-white font-bold text-lg hover:opacity-90 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-riwi-violet"
         >
           {iniciales}
         </button>

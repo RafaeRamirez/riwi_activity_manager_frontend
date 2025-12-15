@@ -1,19 +1,20 @@
-// app/organizador/page.tsx
+'use client';
 
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { OrganizerDashboard } from '@/components/organizer/OrganizerDashboard';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function OrganizadorPage() {
+  const { user } = useAuth();
+
   return (
-    <OrganizerDashboard
-      userName="Barranquilla"
-      userInitials="YC"
-      userRole="organizer"
-      sede="Barranquilla"
-    />
+    <ProtectedRoute allowedRoles={['organizador']}>
+      <OrganizerDashboard
+        userName={user?.sede || 'Sede'}
+        userInitials={user?.iniciales || 'US'}
+        userRole="organizer"
+        sede={user?.sede || 'Barranquilla'}
+      />
+    </ProtectedRoute>
   );
 }
-
-export const metadata = {
-  title: 'Dashboard - Organizador',
-  description: 'Panel de control del organizador',
-};

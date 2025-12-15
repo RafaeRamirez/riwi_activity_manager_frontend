@@ -1,4 +1,4 @@
-# 🎓 Riwi Events - Sistema de Gestión de Eventos
+# Riwi Events - Sistema de Gestión de Eventos
 
 Sistema integral para la gestión de eventos, coders y organizadores de Riwi con roles diferenciados (Coder, Organizador y Admin).
 
@@ -6,7 +6,7 @@ Sistema integral para la gestión de eventos, coders y organizadores de Riwi con
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8)
 
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
 - [Características](#-características)
 - [Tecnologías](#-tecnologías)
@@ -20,9 +20,9 @@ Sistema integral para la gestión de eventos, coders y organizadores de Riwi con
 - [Variables de Entorno](#-variables-de-entorno)
 - [Colores y Diseño](#-colores-y-diseño)
 
-## ✨ Características
+## Características
 
-### 🎯 Funcionalidades Principales
+### Funcionalidades Principales
 
 - **Gestión de Eventos**: CRUD completo de eventos con inscripciones
 - **Gestión de Usuarios**: Manejo de Coders y Organizadores
@@ -33,7 +33,7 @@ Sistema integral para la gestión de eventos, coders y organizadores de Riwi con
 - **Filtros Avanzados**: Búsqueda y filtrado por múltiples criterios
 - **Responsive Design**: Optimizado para desktop, tablet y móvil
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 - **Framework**: [Next.js 16](https://nextjs.org/) - App Router
 - **Lenguaje**: [TypeScript](https://www.typescriptlang.org/)
@@ -42,13 +42,13 @@ Sistema integral para la gestión de eventos, coders y organizadores de Riwi con
 - **Iconos**: Lucide React
 - **Gestión de Estado**: React Hooks (useState, useEffect)
 
-## 📦 Requisitos Previos
+## Requisitos Previos
 
 - Node.js 18.x o superior
 - npm o yarn
 - Backend API corriendo (ver sección de API)
 
-## 🚀 Instalación
+## Instalación
 
 1. **Clonar el repositorio**
 ```bash
@@ -80,7 +80,7 @@ yarn dev
 http://localhost:3000
 ```
 
-## ⚙️ Configuración
+## Configuración
 
 ### Variables de Entorno
 
@@ -100,7 +100,7 @@ NEXT_PUBLIC_BASE_URL=http://localhost:3000
 2. Configura la URL correcta en `.env.local`
 3. Los servicios de API están en `lib/api/apiService.ts`
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 riwi-events/
@@ -152,67 +152,67 @@ riwi-events/
 └── tailwind.config.ts          # Configuración de Tailwind (opcional)
 ```
 
-## 👥 Roles y Funcionalidades
+## Roles y Funcionalidades
 
-### 🎯 Coder
-- ✅ Ver todos los eventos disponibles
-- ✅ Inscribirse/desinscribirse de eventos
-- ✅ Ver eventos en los que está inscrito
-- ✅ Filtrar eventos por título, fecha, modalidad
-- ✅ Ver detalles completos de cada evento
-- ✅ Badge visual de eventos inscritos
+### Coder
+- Ver todos los eventos disponibles
+- Inscribirse/desinscribirse de eventos
+- Ver eventos en los que está inscrito
+- Filtrar eventos por título, fecha, modalidad
+- Ver detalles completos de cada evento
+- Badge visual de eventos inscritos
 
-### 📊 Organizador
+### Organizador
 Gestiona su sede específica (Barranquilla o Medellín):
 
 #### Gestión de Coders
-- ✅ Ver lista de coders de su sede
-- ✅ Ver detalles completos de cada coder
-- ✅ Ver eventos inscritos de cada coder
-- ✅ Ver historial de asistencias/faltas
-- ✅ Desinscribir coders de eventos
-- ✅ Eliminar coders
+- Ver lista de coders de su sede
+- Ver detalles completos de cada coder
+- Ver eventos inscritos de cada coder
+- Ver historial de asistencias/faltas
+- Desinscribir coders de eventos
+- Eliminar coders
 
 #### Gestión de Eventos
-- ✅ Crear nuevos eventos
-- ✅ Editar eventos existentes
-- ✅ Eliminar eventos
-- ✅ Ver lista de inscritos por evento
-- ✅ Desinscribir coders desde el evento
-- ✅ Filtrar eventos
+- Crear nuevos eventos
+- Editar eventos existentes
+- Eliminar eventos
+- Ver lista de inscritos por evento
+- Desinscribir coders desde el evento
+- Filtrar eventos
 
-### 👑 Admin
+### Admin
 Control total del sistema en todas las sedes:
 
 #### Gestión de Coders
-- ✅ Ver coders de todas las sedes
-- ✅ Crear nuevos coders
-- ✅ Editar información de coders
-- ✅ Eliminar coders
-- ✅ Ver detalles, eventos e historial
-- ✅ Filtrar por sede (Barranquilla/Medellín)
+- Ver coders de todas las sedes
+- Crear nuevos coders
+- Editar información de coders
+- Eliminar coders
+- Ver detalles, eventos e historial
+- Filtrar por sede (Barranquilla/Medellín)
 
 #### Gestión de Organizadores
-- ✅ Ver organizadores de todas las sedes
-- ✅ Crear nuevos organizadores
-- ✅ Editar información de organizadores
-- ✅ Eliminar organizadores
-- ✅ Asignar roles (Coordinador/Organizador/Asistente)
+- Ver organizadores de todas las sedes
+- Crear nuevos organizadores
+- Editar información de organizadores
+- Eliminar organizadores
+- Asignar roles (Coordinador/Organizador/Asistente)
 
 #### Gestión de Eventos
-- ✅ Ver eventos de todas las sedes
-- ✅ Crear nuevos eventos
-- ✅ Editar eventos
-- ✅ Eliminar eventos
-- ✅ Ver inscritos de cualquier evento
-- ✅ Gestionar inscripciones
+- Ver eventos de todas las sedes
+- Crear nuevos eventos
+- Editar eventos
+- Eliminar eventos
+- Ver inscritos de cualquier evento
+- Gestionar inscripciones
 
 #### Dashboard
-- ✅ Estadísticas generales del sistema
-- ✅ Total de coders, organizadores y eventos
-- ✅ Vista consolidada de todas las sedes
+- Estadísticas generales del sistema
+- Total de coders, organizadores y eventos
+- Vista consolidada de todas las sedes
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Coders
 ```typescript
@@ -257,7 +257,7 @@ GET    /api/auth/me              // Obtener usuario actual
 POST   /api/auth/logout          // Cerrar sesión
 ```
 
-## 📜 Scripts Disponibles
+## Scripts Disponibles
 
 ```bash
 # Desarrollo
@@ -271,7 +271,7 @@ npm run start        # Inicia servidor de producción
 npm run lint         # Ejecuta ESLint
 ```
 
-## 🎨 Colores y Diseño
+## Colores y Diseño
 
 ### Paleta de Colores Riwi
 
@@ -293,7 +293,7 @@ npm run lint         # Ejecuta ESLint
 <div className="bg-riwi-violet">Fondo violeta</div>
 
 // Gradientes
-<div className="bg-gradient-to-r from-riwi-violet to-riwi-purple">
+<div className="bg-linear-to-r from-riwi-violet to-riwi-purple">
   Gradiente
 </div>
 
@@ -306,7 +306,7 @@ npm run lint         # Ejecuta ESLint
 - **Familia**: Ubuntu (Google Fonts)
 - **Pesos disponibles**: 300 (Light), 400 (Regular), 500 (Medium), 700 (Bold)
 
-## 🔐 Autenticación
+## Autenticación
 
 El sistema utiliza autenticación basada en JWT (si está implementada en el backend).
 
@@ -320,14 +320,14 @@ headers: {
 }
 ```
 
-## 📱 Responsive Design
+## Responsive Design
 
 El sistema es completamente responsive con breakpoints:
 - **Mobile**: < 768px
 - **Tablet**: 768px - 1024px
 - **Desktop**: > 1024px
 
-## 🐛 Debugging
+## Debugging
 
 ```typescript
 // Todos los errores se manejan con try-catch
@@ -339,13 +339,13 @@ try {
 }
 ```
 
-## 📄 Licencia
+## Licencia
 
 Este proyecto es privado y pertenece a Riwi.
 
 ---
 
-## 🚀 Próximos Pasos
+## Próximos Pasos
 
 - [ ] Implementar notificaciones en tiempo real
 - [ ] Agregar sistema de notificaciones por email
@@ -355,15 +355,11 @@ Este proyecto es privado y pertenece a Riwi.
 - [ ] Calendario visual de eventos
 - [ ] App móvil nativa
 
-## 📞 Soporte
+## Soporte
 
 Para soporte o preguntas:
-- Email: dev@riwi.io
+- Email: castrogil202@gmail.com
 - Slack: #riwi-events-support
-
----
-
-⭐ Si te gusta este proyecto, ¡dale una estrella en GitHub!
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
@@ -425,3 +421,494 @@ Coder:
           cohorte: 'Cohorte 15',
           fechaIngreso: new Date('2024-01-15'),
           telefono: '+57 303 456 7890'
+
+
+
+
+# Endpoints Necesarios para Riwi Events
+
+## Autenticación
+
+### POST `/api/auth/login`
+**Descripción**: Iniciar sesión
+**Body**:
+```json
+{
+  "email": "usuario@riwi.io",
+  "password": "password123"
+}
+```
+**Response**:
+```json
+{
+  "token": "jwt_token_here",
+  "user": {
+    "id": "1",
+    "nombre": "Juan Pérez",
+    "email": "juan@riwi.io",
+    "rol": "coder|organizador|admin",
+    "sede": "Barranquilla",
+    "iniciales": "JP"
+  }
+}
+```
+
+### POST `/api/auth/register`
+**Descripción**: Registrar nuevo usuario
+**Body**:
+```json
+{
+  "nombre": "Juan Pérez",
+  "email": "juan@riwi.io",
+  "password": "password123",
+  "sede": "Barranquilla",
+  "cohorte": "Cohorte 15",
+  "telefono": "+57 300 123 4567"
+}
+```
+
+### GET `/api/auth/me`
+**Descripción**: Obtener usuario autenticado
+**Headers**: `Authorization: Bearer {token}`
+**Response**:
+```json
+{
+  "id": "1",
+  "nombre": "Juan Pérez",
+  "email": "juan@riwi.io",
+  "rol": "coder",
+  "sede": "Barranquilla"
+}
+```
+
+### POST `/api/auth/logout`
+**Descripción**: Cerrar sesión
+**Headers**: `Authorization: Bearer {token}`
+
+---
+
+## CODERS (Gestión de Estudiantes)
+
+### GET `/api/coders`
+**Descripción**: Obtener todos los coders
+**Query Params** (opcionales):
+- `sede`: Barranquilla | Medellín
+- `cohorte`: Cohorte 15
+- `search`: término de búsqueda
+
+**Response**:
+```json
+[
+  {
+    "id": "1",
+    "nombre": "Juan Pérez",
+    "email": "juan.perez@riwi.io",
+    "sede": "Barranquilla",
+    "cohorte": "Cohorte 15",
+    "fechaIngreso": "2024-01-15T00:00:00Z",
+    "telefono": "+57 300 123 4567"
+  }
+]
+```
+
+### GET `/api/coders/:id`
+**Descripción**: Obtener un coder específico
+**Response**:
+```json
+{
+  "id": "1",
+  "nombre": "Juan Pérez",
+  "email": "juan.perez@riwi.io",
+  "sede": "Barranquilla",
+  "cohorte": "Cohorte 15",
+  "fechaIngreso": "2024-01-15T00:00:00Z",
+  "telefono": "+57 300 123 4567"
+}
+```
+
+### POST `/api/coders`
+**Descripción**: Crear nuevo coder
+**Body**:
+```json
+{
+  "nombre": "Juan Pérez",
+  "email": "juan.perez@riwi.io",
+  "sede": "Barranquilla",
+  "cohorte": "Cohorte 15",
+  "fechaIngreso": "2024-01-15",
+  "telefono": "+57 300 123 4567"
+}
+```
+
+### PUT `/api/coders/:id`
+**Descripción**: Actualizar coder
+**Body**: (mismo que POST)
+
+### DELETE `/api/coders/:id`
+**Descripción**: Eliminar coder
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Coder eliminado exitosamente"
+}
+```
+
+### GET `/api/coders/:id/eventos`
+**Descripción**: Obtener eventos inscritos de un coder (solo futuros)
+**Response**:
+```json
+[
+  {
+    "id": "1",
+    "titulo": "Workshop de React",
+    "fecha": "2025-12-20T14:00:00Z",
+    "ubicacion": "Remoto Vía: Zoom",
+    "modalidad": "Virtual",
+    "asistio": false
+  }
+]
+```
+
+### GET `/api/coders/:id/historial`
+**Descripción**: Obtener historial completo de eventos de un coder (pasados)
+**Response**:
+```json
+[
+  {
+    "id": "3",
+    "titulo": "Workshop de React",
+    "fecha": "2025-10-15T14:00:00Z",
+    "asistio": true
+  },
+  {
+    "id": "4",
+    "titulo": "Intro a TypeScript",
+    "fecha": "2025-10-10T15:00:00Z",
+    "asistio": false
+  }
+]
+```
+
+---
+
+## EVENTOS (Gestión de Eventos)
+
+### GET `/api/eventos`
+**Descripción**: Obtener todos los eventos
+**Query Params** (opcionales):
+- `sede`: Barranquilla | Medellín
+- `modalidad`: Virtual | Presencial | Híbrido
+- `proximos`: true | false (solo eventos futuros)
+- `search`: término de búsqueda
+
+**Response**:
+```json
+[
+  {
+    "id": "1",
+    "titulo": "Workshop de React Avanzado",
+    "descripcion": "Aprende patrones avanzados...",
+    "fecha": "2025-12-20T14:00:00Z",
+    "ubicacion": "Remoto Vía: Zoom",
+    "sala": "Sala Virtual 1",
+    "modalidad": "Virtual",
+    "capacidad": 30,
+    "inscritos": 15,
+    "sede": "Barranquilla"
+  }
+]
+```
+
+### GET `/api/eventos/:id`
+**Descripción**: Obtener un evento específico
+**Response**: (mismo formato que el array anterior, pero un solo objeto)
+
+### POST `/api/eventos`
+**Descripción**: Crear nuevo evento
+**Body**:
+```json
+{
+  "titulo": "Workshop de React",
+  "descripcion": "Aprende React desde cero...",
+  "fecha": "2025-12-20T14:00:00Z",
+  "ubicacion": "Remoto Vía: Zoom",
+  "sala": "Sala Virtual 1",
+  "modalidad": "Virtual",
+  "capacidad": 30,
+  "sede": "Barranquilla"
+}
+```
+**Response**:
+```json
+{
+  "id": "10",
+  "titulo": "Workshop de React",
+  "descripcion": "Aprende React desde cero...",
+  "fecha": "2025-12-20T14:00:00Z",
+  "ubicacion": "Remoto Vía: Zoom",
+  "sala": "Sala Virtual 1",
+  "modalidad": "Virtual",
+  "capacidad": 30,
+  "inscritos": 0,
+  "sede": "Barranquilla"
+}
+```
+
+### PUT `/api/eventos/:id`
+**Descripción**: Actualizar evento
+**Body**: (mismo que POST, sin el campo inscritos)
+
+### DELETE `/api/eventos/:id`
+**Descripción**: Eliminar evento
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Evento eliminado exitosamente"
+}
+```
+
+### GET `/api/eventos/:id/inscritos`
+**Descripción**: Obtener lista de coders inscritos en un evento
+**Response**:
+```json
+[
+  {
+    "id": "1",
+    "nombre": "Juan Pérez",
+    "email": "juan.perez@riwi.io",
+    "cohorte": "Cohorte 15",
+    "fechaInscripcion": "2025-11-20T10:00:00Z"
+  },
+  {
+    "id": "2",
+    "nombre": "María González",
+    "email": "maria.gonzalez@riwi.io",
+    "cohorte": "Cohorte 15",
+    "fechaInscripcion": "2025-11-21T11:30:00Z"
+  }
+]
+```
+
+### POST `/api/eventos/:id/inscribir`
+**Descripción**: Inscribir un coder a un evento
+**Body**:
+```json
+{
+  "coderId": "1"
+}
+```
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Inscripción exitosa",
+  "evento": {
+    "id": "1",
+    "titulo": "Workshop de React",
+    "inscritos": 16,
+    "capacidad": 30
+  }
+}
+```
+**Errores posibles**:
+- `400`: Ya está inscrito
+- `400`: Evento lleno
+- `404`: Evento no encontrado
+
+### POST `/api/eventos/:id/desinscribir`
+**Descripción**: Desinscribir un coder de un evento
+**Body**:
+```json
+{
+  "coderId": "1"
+}
+```
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Desinscripción exitosa",
+  "evento": {
+    "id": "1",
+    "titulo": "Workshop de React",
+    "inscritos": 15,
+    "capacidad": 30
+  }
+}
+```
+
+---
+
+## ORGANIZADORES (Gestión de Staff)
+
+### GET `/api/organizadores`
+**Descripción**: Obtener todos los organizadores
+**Query Params** (opcionales):
+- `sede`: Barranquilla | Medellín
+- `rol`: Coordinador | Organizador | Asistente
+
+**Response**:
+```json
+[
+  {
+    "id": "1",
+    "nombre": "Laura Sánchez",
+    "email": "laura.sanchez@riwi.io",
+    "sede": "Barranquilla",
+    "rol": "Coordinador",
+    "fechaIngreso": "2023-01-10T00:00:00Z",
+    "telefono": "+57 300 111 1111"
+  }
+]
+```
+
+### GET `/api/organizadores/:id`
+**Descripción**: Obtener un organizador específico
+
+### POST `/api/organizadores`
+**Descripción**: Crear nuevo organizador
+**Body**:
+```json
+{
+  "nombre": "Laura Sánchez",
+  "email": "laura.sanchez@riwi.io",
+  "sede": "Barranquilla",
+  "rol": "Coordinador",
+  "fechaIngreso": "2023-01-10",
+  "telefono": "+57 300 111 1111"
+}
+```
+
+### PUT `/api/organizadores/:id`
+**Descripción**: Actualizar organizador
+**Body**: (mismo que POST)
+
+### DELETE `/api/organizadores/:id`
+**Descripción**: Eliminar organizador
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Organizador eliminado exitosamente"
+}
+```
+
+---
+
+## ESTADÍSTICAS (Opcional pero recomendado)
+
+### GET `/api/stats/dashboard`
+**Descripción**: Obtener estadísticas generales para el dashboard del admin
+**Response**:
+```json
+{
+  "totalCoders": 156,
+  "totalOrganizadores": 8,
+  "totalEventos": 42,
+  "codersBarranquilla": 85,
+  "codersMedellin": 71,
+  "eventosProximos": 12,
+  "eventosPasados": 30
+}
+```
+
+### GET `/api/stats/eventos/:id`
+**Descripción**: Estadísticas de un evento específico
+**Response**:
+```json
+{
+  "eventoId": "1",
+  "titulo": "Workshop de React",
+  "inscritos": 28,
+  "capacidad": 30,
+  "asistencias": 25,
+  "faltas": 3,
+  "porcentajeAsistencia": 89.3
+}
+```
+
+---
+
+## Resumen de Endpoints por Rol
+
+### **Coder** (solo lectura de eventos)
+- ✅ GET `/api/eventos` (ver todos los eventos)
+- ✅ GET `/api/eventos/:id` (ver detalle de evento)
+- ✅ POST `/api/eventos/:id/inscribir` (inscribirse)
+- ✅ POST `/api/eventos/:id/desinscribir` (desinscribirse)
+- ✅ GET `/api/coders/:id/eventos` (mis eventos inscritos)
+
+### **Organizador** (gestión de su sede)
+- ✅ GET `/api/coders?sede=X` (coders de su sede)
+- ✅ GET `/api/coders/:id` (ver detalle de coder)
+- ✅ DELETE `/api/coders/:id` (eliminar coder)
+- ✅ PUT `/api/coders/:id` (actualizar coder)
+- ✅ GET `/api/coders/:id/eventos` (eventos de un coder)
+- ✅ GET `/api/coders/:id/historial` (historial de coder)
+- ✅ GET `/api/eventos?sede=X` (eventos de su sede)
+- ✅ POST `/api/eventos` (crear evento)
+- ✅ PUT `/api/eventos/:id` (actualizar evento)
+- ✅ DELETE `/api/eventos/:id` (eliminar evento)
+- ✅ GET `/api/eventos/:id/inscritos` (ver inscritos)
+- ✅ POST `/api/eventos/:id/desinscribir` (desinscribir coders)
+
+### **Admin** (control total)
+- ✅ **Todos los endpoints de Organizador** sin restricción de sede
+- ✅ POST `/api/coders` (crear coders)
+- ✅ GET `/api/organizadores` (gestión de organizadores)
+- ✅ POST `/api/organizadores` (crear organizadores)
+- ✅ PUT `/api/organizadores/:id` (actualizar organizadores)
+- ✅ DELETE `/api/organizadores/:id` (eliminar organizadores)
+- ✅ GET `/api/stats/dashboard` (estadísticas generales)
+
+---
+
+## Códigos de Estado HTTP
+
+```
+200 - OK: Operación exitosa
+201 - Created: Recurso creado exitosamente
+400 - Bad Request: Datos inválidos o falta información
+401 - Unauthorized: No autenticado
+403 - Forbidden: No tiene permisos
+404 - Not Found: Recurso no encontrado
+409 - Conflict: Conflicto (ej: email duplicado, evento lleno)
+500 - Internal Server Error: Error del servidor
+```
+
+---
+
+## Autenticación en Headers
+
+Todos los endpoints (excepto `/api/auth/login` y `/api/auth/register`) requieren:
+
+```
+Authorization: Bearer {jwt_token}
+Content-Type: application/json
+```
+
+---
+
+## Notas Importantes
+
+1. **Fechas**: Todas las fechas deben estar en formato ISO 8601 (UTC)
+2. **Validaciones**: El backend debe validar:
+   - Email único
+   - Capacidad > inscritos
+   - Fechas de eventos futuras
+   - Permisos por rol
+3. **Filtros**: Los query params son opcionales pero muy útiles
+4. **Paginación**: Considera agregar paginación para listas grandes
+5. **CORS**: Asegúrate de habilitar CORS para tu dominio frontend
+
+---
+
+## Total de Endpoints: **28**
+
+- Autenticación: 4
+- Coders: 8
+- Eventos: 8
+- Organizadores: 6
+- Estadísticas: 2
