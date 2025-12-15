@@ -3,151 +3,169 @@
 
 import { useEffect, useState } from 'react';
 import { EventosLayout } from '@/components/events/EventLayout';
-import { inscripcionesService } from '@/lib/inscripcionesService';
+import { eventosAPI, codersAPI } from '@/lib/api/apiService';
 import type { Event } from '@/types/event';
 
 export default function CoderPage() {
-  const [eventos, setEventos] = useState<Event[]>([]);
-  const [eventosInscritos, setEventosInscritos] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+    const [eventos, setEventos] = useState<Event[]>([]);
+    const [eventosInscritos, setEventosInscritos] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-  // Cargar datos iniciales
-  useEffect(() => {
-    const cargarDatos = async () => {
-      try {
-        const [eventosData, inscripcionesData] = await Promise.all([
-          inscripcionesService.getEventos(),
-          inscripcionesService.getInscripciones()
-        ]);
-        
-        setEventos(eventosData);
-        setEventosInscritos(inscripcionesData);
-      } catch (error) {
-        console.error('Error cargando datos:', error);
-      } finally {
-        setIsLoading(false);
-      }
+    // TODO: Reemplazar con el ID del usuario autenticado (del contexto/sesión)
+    const CURRENT_USER_ID = 'USER_ID_FROM_AUTH'; // Obtener de tu sistema de auth
+    const { user } = useAuth();
+    // Cargar datos iniciales
+    useEffect(() => {
+        cargarDatosIniciales();
+    }, []);
+
+    const cargarDatosIniciales = async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
+
+            // Cargar eventos y inscripciones en paralelo
+            const [eventosData, inscripcionesData] = await Promise.all([
+                eventosAPI.getAll(),
+                codersAPI.getEventosInscritos(CURRENT_USER_ID)
+            ]);
+
+            // Extraer solo los IDs de los eventos inscritos
+            const inscritosIds = inscripcionesData.map((evento: Event) => evento.id);
+
+            setEventos(eventosData);
+            setEventosInscritos(inscritosIds);
+
+            console.log('✅ Datos cargados exitosamente');
+            console.log('Eventos:', eventosData.length);
+            console.log('Inscritos:', inscritosIds.length);
+        } catch (error) {
+            console.error('❌ Error cargando datos:', error);
+            setError('Error al cargar los eventos. Por favor, intenta de nuevo.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    cargarDatos();
-  }, []);
+    // Manejar inscripción a un evento
+    const handleInscribir = async (eventoId: string) => {
+        try {
+            console.log('🔄 Inscribiendo al evento:', eventoId);
 
-  // Manejar inscripción
-  const handleInscribir = async (eventoId: string) => {
-    const resultado = await inscripcionesService.inscribirse(eventoId);
-    
-    if (resultado.success) {
-      // Actualizar lista de eventos
-      const eventosActualizados = await inscripcionesService.getEventos();
-      setEventos(eventosActualizados);
-      
-      // Mostrar mensaje de éxito (puedes usar un toast aquí)
-      console.log('✅', resultado.mensaje);
-    } else {
-      console.error('❌', resultado.mensaje);
-      alert(resultado.mensaje);
+            // Llamada al backend para inscribir
+            const resultado = await eventosAPI.inscribir(eventoId, CURRENT_USER_ID);
+
+            if (resultado.success || resultado) {
+                // Actualizar lista de eventos para reflejar el cambio en inscritos
+                const eventosActualizados = await eventosAPI.getAll();
+                setEventos(eventosActualizados);
+
+                console.log('✅ Inscripción exitosa');
+
+                // Mostrar mensaje de éxito (puedes usar un toast aquí)
+                alert('¡Te has inscrito exitosamente al evento!');
+            }
+        } catch (error: any) {
+            console.error('❌ Error al inscribir:', error);
+
+            // Manejar diferentes tipos de errores
+            if (error.message?.includes('lleno')) {
+                alert('Lo sentimos, el evento está lleno.');
+            } else if (error.message?.includes('inscrito')) {
+                alert('Ya estás inscrito en este evento.');
+            } else {
+                alert('Error al inscribirse al evento. Por favor, intenta de nuevo.');
+            }
+        }
+    };
+
+    // Manejar desinscripción de un evento
+    const handleDesinscribir = async (eventoId: string) => {
+        try {
+            console.log('🔄 Desinscribiendo del evento:', eventoId);
+
+            // Confirmación antes de desinscribir
+            const confirmar = window.confirm(
+                '¿Estás seguro que deseas desinscribirte de este evento?'
+            );
+
+            if (!confirmar) return;
+
+            // Llamada al backend para desinscribir
+            const resultado = await eventosAPI.desinscribir(eventoId, CURRENT_USER_ID);
+
+            if (resultado.success || resultado) {
+                // Actualizar lista de eventos para reflejar el cambio en inscritos
+                const eventosActualizados = await eventosAPI.getAll();
+                setEventos(eventosActualizados);
+
+                console.log('✅ Desinscripción exitosa');
+
+                // Mostrar mensaje de éxito
+                alert('Te has desinscrito del evento.');
+            }
+        } catch (error: any) {
+            console.error('❌ Error al desinscribir:', error);
+            alert('Error al desinscribirse del evento. Por favor, intenta de nuevo.');
+        }
+    };
+
+    // Estado de carga
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-riwi-violet mx-auto mb-4"></div>
+                    <p className="text-gray-600">Cargando eventos...</p>
+                </div>
+            </div>
+        );
     }
-  };
 
-  // Manejar desinscripción
-  const handleDesinscribir = async (eventoId: string) => {
-    const resultado = await inscripcionesService.desinscribirse(eventoId);
-    
-    if (resultado.success) {
-      // Actualizar lista de eventos
-      const eventosActualizados = await inscripcionesService.getEventos();
-      setEventos(eventosActualizados);
-      
-      // Mostrar mensaje de éxito
-      console.log('✅', resultado.mensaje);
-    } else {
-      console.error('❌', resultado.mensaje);
-      alert(resultado.mensaje);
+    // Estado de error
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+                <div className="text-center max-w-md mx-auto p-6">
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-4">
+                        <svg
+                            className="w-12 h-12 text-red-500 mx-auto mb-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                        </svg>
+                        <h3 className="text-lg font-bold text-red-900 mb-2">Error al cargar</h3>
+                        <p className="text-red-700 mb-4">{error}</p>
+                        <button
+                            onClick={cargarDatosIniciales}
+                            className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                        >
+                            Reintentar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     }
-  };
 
-  if (isLoading) {
+    // Renderizado principal
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-riwi-violet mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando eventos...</p>
-        </div>
-      </div>
+        <EventosLayout
+            eventos={eventos}
+            userName={user.sede} // TODO: Obtener del usuario autenticado
+            userInitials={user.iniciales}        // TODO: Obtener del usuario autenticado
+            userRole={user.rol}   // TODO: Obtener del usuario autenticado
+            eventosInscritosIniciales={eventosInscritos}
+            onInscribir={handleInscribir}
+            onDesinscribir={handleDesinscribir}
+        />
     );
-  }
-
-  return (
-    <EventosLayout
-      eventos={eventos}
-      userName="Barranquilla"
-      userInitials="YC"
-      userRole="coder"
-      eventosInscritosIniciales={eventosInscritos}
-      onInscribir={handleInscribir}
-      onDesinscribir={handleDesinscribir}
-    />
-  );
 }
-
-
-
-
-
-// import { EventosLayout } from '@/components/events/EventLayout';
-// import type { Event } from '@/types/event';
-// import { mockEventos } from '@/lib/mockEvents';
-
-// // Función para obtener eventos desde tu API
-// async function getEventos(): Promise<Event[]> {
-//   try {
-//     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/eventos`, {
-//       cache: 'no-store', // Para datos dinámicos
-//       // O next: { revalidate: 60 } // Revalidar cada 60 segundos
-//     });
-
-//     if (!res.ok) {
-//       throw new Error('Error al cargar eventos');
-//     }
-
-//     const data = await res.json();
-//     return data;
-//   } catch (error) {
-//     console.error('Error fetching eventos:', error);
-//     return []; // Retorna array vacío si hay error
-//   }
-// }
-
-// // O si usas una librería como Prisma
-// // import { prisma } from '@/lib/prisma';
-// // async function getEventos(): Promise<Evento[]> {
-// //   return await prisma.evento.findMany({
-// //     where: {
-// //       fecha: {
-// //         gte: new Date() // Solo eventos futuros
-// //       }
-// //     },
-// //     orderBy: {
-// //       fecha: 'asc'
-// //     }
-// //   });
-// // }
-
-// export default async function CoderPage() {
-//   const eventos = mockEventos //await getEventos();
-
-//   return (
-//     <EventosLayout
-//       eventos={eventos}
-//       userName="Barranquilla"
-//       userInitials="CD"
-//       userRole="coder"
-//     />
-//   );
-// }
-
-// // Metadata opcional
-// export const metadata = {
-//   title: 'Eventos - Coder',
-//   description: 'Próximos eventos para coders',
-// };
