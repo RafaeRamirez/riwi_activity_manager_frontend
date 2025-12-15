@@ -14,7 +14,7 @@ export default function CoderPage() {
 
     // TODO: Reemplazar con el ID del usuario autenticado (del contexto/sesión)
     const CURRENT_USER_ID = 'USER_ID_FROM_AUTH'; // Obtener de tu sistema de auth
-    const { user } = useAuth();
+    // const { user } = useAuth();
     // Cargar datos iniciales
     useEffect(() => {
         cargarDatosIniciales();

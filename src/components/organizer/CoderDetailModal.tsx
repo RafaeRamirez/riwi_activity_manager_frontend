@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { codersAPI, eventosAPI } from '@/lib/api/apiService';
 
 interface Coder {
   id: string;
@@ -17,7 +18,7 @@ interface EventoInscrito {
   id: string;
   titulo: string;
   fecha: Date;
-  asistio: boolean;
+  asistio?: boolean;
 }
 
 interface CoderDetailModalProps {
@@ -32,37 +33,98 @@ export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalP
   const [activeTab, setActiveTab] = useState<'info' | 'eventos' | 'historial'>('info');
   const [eventosInscritos, setEventosInscritos] = useState<EventoInscrito[]>([]);
   const [historial, setHistorial] = useState<EventoInscrito[]>([]);
+  const [isLoadingEventos, setIsLoadingEventos] = useState(false);
+  const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    
-    // Simulación de carga de eventos inscritos
-    setEventosInscritos([
-      { id: '1', titulo: 'Taller Socioemocional', fecha: new Date('2025-11-28'), asistio: false },
-      { id: '2', titulo: 'Taller Complementario', fecha: new Date('2025-11-30'), asistio: false },
-    ]);
-
-    // Simulación de historial
-    setHistorial([
-      { id: '3', titulo: 'Workshop de React', fecha: new Date('2025-10-15'), asistio: true },
-      { id: '4', titulo: 'Intro a TypeScript', fecha: new Date('2025-10-10'), asistio: true },
-      { id: '5', titulo: 'Git Avanzado', fecha: new Date('2025-09-20'), asistio: false },
-      { id: '6', titulo: 'Testing con Jest', fecha: new Date('2025-09-15'), asistio: true },
-    ]);
-
     return () => {
       document.body.style.overflow = 'unset';
     };
   }, []);
+
+  // Cargar eventos inscritos cuando se abre el tab
+  useEffect(() => {
+    if (activeTab === 'eventos') {
+      cargarEventosInscritos();
+    } else if (activeTab === 'historial') {
+      cargarHistorial();
+    }
+  }, [activeTab]);
+
+  const cargarEventosInscritos = async () => {
+    try {
+      setIsLoadingEventos(true);
+
+      console.log('🔄 Cargando eventos inscritos del coder:', coder.id);
+
+      const data = await codersAPI.getEventosInscritos(coder.id);
+      
+      // Convertir fechas y filtrar solo futuros
+      const eventosConFechas = data
+        .map((evento: any) => ({
+          ...evento,
+          fecha: new Date(evento.fecha),
+          asistio: false
+        }))
+        .filter((evento: EventoInscrito) => evento.fecha >= new Date());
+
+      setEventosInscritos(eventosConFechas);
+      console.log('✅ Eventos inscritos:', eventosConFechas.length);
+    } catch (error) {
+      console.error('❌ Error cargando eventos inscritos:', error);
+    } finally {
+      setIsLoadingEventos(false);
+    }
+  };
+
+  const cargarHistorial = async () => {
+    try {
+      setIsLoadingHistorial(true);
+
+      console.log('🔄 Cargando historial del coder:', coder.id);
+
+      const data = await codersAPI.getHistorial(coder.id);
+      
+      // Convertir fechas
+      const historialConFechas = data.map((evento: any) => ({
+        ...evento,
+        fecha: new Date(evento.fecha)
+      }));
+
+      setHistorial(historialConFechas);
+      console.log('✅ Historial cargado:', historialConFechas.length);
+    } catch (error) {
+      console.error('❌ Error cargando historial:', error);
+    } finally {
+      setIsLoadingHistorial(false);
+    }
+  };
 
   const handleSave = () => {
     onUpdate(formData);
     setIsEditing(false);
   };
 
-  const handleDesinscribir = (eventoId: string) => {
-    if (confirm('¿Deseas desinscribir a este coder del evento?')) {
-      setEventosInscritos(eventosInscritos.filter(e => e.id !== eventoId));
+  const handleDesinscribir = async (eventoId: string, eventoTitulo: string) => {
+    if (!confirm(`¿Deseas desinscribir a este coder del evento "${eventoTitulo}"?`)) {
+      return;
+    }
+
+    try {
+      console.log('🔄 Desinscribiendo del evento:', eventoId);
+
+      await eventosAPI.desinscribir(eventoId, coder.id);
+
+      console.log('✅ Desinscrito exitosamente');
+      
+      // Recargar eventos inscritos
+      await cargarEventosInscritos();
+
+      alert('Coder desinscrito exitosamente');
+    } catch (error) {
+      console.error('❌ Error al desinscribir:', error);
+      alert('Error al desinscribir del evento');
     }
   };
 
@@ -70,7 +132,7 @@ export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalP
   const faltas = historial.filter(e => !e.asistio).length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="bg-linear-to-r from-riwi-green to-riwi-yellow p-6 text-white">
@@ -258,7 +320,12 @@ export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalP
           {/* Tab: Eventos Inscritos */}
           {activeTab === 'eventos' && (
             <div className="space-y-3">
-              {eventosInscritos.length > 0 ? (
+              {isLoadingEventos ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-riwi-green mx-auto mb-2"></div>
+                  <p className="text-sm text-gray-600">Cargando...</p>
+                </div>
+              ) : eventosInscritos.length > 0 ? (
                 eventosInscritos.map((evento) => (
                   <div 
                     key={evento.id}
@@ -275,7 +342,7 @@ export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalP
                       </p>
                     </div>
                     <button
-                      onClick={() => handleDesinscribir(evento.id)}
+                      onClick={() => handleDesinscribir(evento.id, evento.titulo)}
                       className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
                       title="Desinscribir"
                     >
@@ -294,57 +361,70 @@ export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalP
           {/* Tab: Historial */}
           {activeTab === 'historial' && (
             <div>
-              {/* Estadísticas */}
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="bg-gray-50 rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-gray-900">{historial.length}</p>
-                  <p className="text-sm text-gray-600">Total eventos</p>
+              {isLoadingHistorial ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-riwi-green mx-auto mb-2"></div>
+                  <p className="text-sm text-gray-600">Cargando...</p>
                 </div>
-                <div className="bg-green-50 rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-green-600">{asistencias}</p>
-                  <p className="text-sm text-gray-600">Asistencias</p>
-                </div>
-                <div className="bg-red-50 rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-red-600">{faltas}</p>
-                  <p className="text-sm text-gray-600">Faltas</p>
-                </div>
-              </div>
-
-              {/* Lista de eventos pasados */}
-              <div className="space-y-2">
-                {historial.map((evento) => (
-                  <div 
-                    key={evento.id}
-                    className="border border-gray-200 rounded-lg p-3 flex items-center justify-between"
-                  >
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">{evento.titulo}</h4>
-                      <p className="text-sm text-gray-600">
-                        {evento.fecha.toLocaleDateString('es-ES', { 
-                          day: '2-digit', 
-                          month: 'short', 
-                          year: 'numeric' 
-                        })}
-                      </p>
+              ) : (
+                <>
+                  {/* Estadísticas */}
+                  <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="bg-gray-50 rounded-lg p-4 text-center">
+                      <p className="text-2xl font-bold text-gray-900">{historial.length}</p>
+                      <p className="text-sm text-gray-600">Total eventos</p>
                     </div>
-                    {evento.asistio ? (
-                      <span className="flex items-center gap-1 text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                        Asistió
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-sm bg-red-100 text-red-700 px-3 py-1 rounded-full font-medium">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                        </svg>
-                        Faltó
-                      </span>
-                    )}
+                    <div className="bg-green-50 rounded-lg p-4 text-center">
+                      <p className="text-2xl font-bold text-green-600">{asistencias}</p>
+                      <p className="text-sm text-gray-600">Asistencias</p>
+                    </div>
+                    <div className="bg-red-50 rounded-lg p-4 text-center">
+                      <p className="text-2xl font-bold text-red-600">{faltas}</p>
+                      <p className="text-sm text-gray-600">Faltas</p>
+                    </div>
                   </div>
-                ))}
-              </div>
+
+                  {/* Lista de eventos pasados */}
+                  {historial.length > 0 ? (
+                    <div className="space-y-2">
+                      {historial.map((evento) => (
+                        <div 
+                          key={evento.id}
+                          className="border border-gray-200 rounded-lg p-3 flex items-center justify-between"
+                        >
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-gray-900">{evento.titulo}</h4>
+                            <p className="text-sm text-gray-600">
+                              {evento.fecha.toLocaleDateString('es-ES', { 
+                                day: '2-digit', 
+                                month: 'short', 
+                                year: 'numeric' 
+                              })}
+                            </p>
+                          </div>
+                          {evento.asistio ? (
+                            <span className="flex items-center gap-1 text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                              Asistió
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1 text-sm bg-red-100 text-red-700 px-3 py-1 rounded-full font-medium">
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                              </svg>
+                              Faltó
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-center text-gray-500 py-8">No hay historial de eventos</p>
+                  )}
+                </>
+              )}
             </div>
           )}
         </div>

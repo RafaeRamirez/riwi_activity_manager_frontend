@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import { eventosAPI } from '@/lib/api/apiService';
 
 interface CrearEventoProps {
   onEventoCreado: () => void;
@@ -18,6 +19,7 @@ export function CrearEvento({ onEventoCreado }: CrearEventoProps) {
     sala: '',
     modalidad: 'Virtual' as 'Virtual' | 'Presencial' | 'Híbrido',
     capacidad: '',
+    sede: 'Barranquilla', // TODO: Obtener de la sesión del organizador
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -31,11 +33,23 @@ export function CrearEvento({ onEventoCreado }: CrearEventoProps) {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulación de creación de evento
-    setTimeout(() => {
-      console.log('Evento creado:', formData);
+    try {
+      console.log('🔄 Creando evento:', formData);
+
+      // Preparar datos para enviar a la API
+      const eventoData = {
+        ...formData,
+        fecha: new Date(`${formData.fecha}T${formData.hora}`),
+        capacidad: parseInt(formData.capacidad),
+        inscritos: 0,
+      };
+
+      // Llamada a la API
+      await eventosAPI.create(eventoData);
+
+      console.log('✅ Evento creado exitosamente');
+      
       alert('¡Evento creado exitosamente!');
-      setIsLoading(false);
       
       // Resetear formulario
       setFormData({
@@ -47,10 +61,25 @@ export function CrearEvento({ onEventoCreado }: CrearEventoProps) {
         sala: '',
         modalidad: 'Virtual',
         capacidad: '',
+        sede: 'Barranquilla',
       });
 
+      // Llamar callback para recargar lista
       onEventoCreado();
-    }, 1000);
+    } catch (error: any) {
+      console.error('❌ Error al crear evento:', error);
+      
+      // Manejar errores específicos
+      if (error.message?.includes('fecha')) {
+        alert('La fecha del evento debe ser futura.');
+      } else if (error.message?.includes('capacidad')) {
+        alert('La capacidad debe ser mayor a 0.');
+      } else {
+        alert('Error al crear el evento. Por favor, verifica los datos e intenta de nuevo.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -105,6 +134,7 @@ export function CrearEvento({ onEventoCreado }: CrearEventoProps) {
               value={formData.fecha}
               onChange={handleChange}
               required
+              min={new Date().toISOString().split('T')[0]}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-riwi-violet"
             />
           </div>
@@ -218,6 +248,7 @@ export function CrearEvento({ onEventoCreado }: CrearEventoProps) {
                   sala: '',
                   modalidad: 'Virtual',
                   capacidad: '',
+                  sede: 'Barranquilla',
                 });
               }
             }}
