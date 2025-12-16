@@ -6,9 +6,9 @@ import { authAPI } from '@/lib/api/apiService';
 
 interface User {
     id: string;
-    nombre: string;
     email: string;
-    rol: 'coder' | 'organizador' | 'admin';
+    nombre: string;
+    role: 'coder' | 'organizer' | 'admin';
     sede: string;
     iniciales?: string;
 }
@@ -16,29 +16,54 @@ interface User {
 export function useAuth() {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isHydrated, setIsHydrated] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
+        // Marcar que el componente está hidratado (en el cliente)
+        setIsHydrated(true);
         checkAuth();
     }, []);
 
     const checkAuth = async () => {
         try {
+            // Solo acceder a localStorage después de hidratación
+            if (typeof window === 'undefined') {
+                console.log('⚠️ Ejecutando en servidor, saltando checkAuth');
+                setIsLoading(false);
+                return;
+            }
+
             const token = localStorage.getItem('token');
             const storedUser = localStorage.getItem('user');
 
+            console.log('🔍 Verificando auth. Token:', token ? 'EXISTS (' + token.substring(0, 20) + '...)' : 'NO EXISTE', 'User:', storedUser ? 'EXISTS' : 'NO EXISTE');
+
             if (token && storedUser) {
-                // Verificar si el token sigue siendo válido
-                const userData = await authAPI.getCurrentUser(token);
-                setUser(userData);
+                // Usar el usuario almacenado en lugar de hacer una llamada al backend
+                // esto evita recargas innecesarias durante el login
+                try {
+                    const userData = JSON.parse(storedUser);
+                    console.log('✅ Usuario cargado desde localStorage:', userData);
+                    setUser(userData);
+                } catch (e) {
+                    // Si hay error parseando, limpiar storage
+                    console.error('❌ Error parseando usuario:', e);
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    setUser(null);
+                }
             } else {
+                console.log('⚠️ No hay token o usuario en localStorage');
                 setUser(null);
             }
         } catch (error) {
             console.error('Error verificando autenticación:', error);
             // Token inválido, limpiar storage
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+            }
             setUser(null);
         } finally {
             setIsLoading(false);
@@ -65,6 +90,7 @@ export function useAuth() {
     return {
         user,
         isLoading,
+        isHydrated,
         isAuthenticated: !!user,
         logout,
         checkAuth

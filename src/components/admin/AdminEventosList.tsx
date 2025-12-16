@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { eventosAPI } from '@/lib/api/apiService';
+import { mockEventos } from '@/lib/mockData';
 import { EditarEventoModal } from '../organizer/EditarEventModal';
 import { InscritosModal } from '../organizer/InscritosModal';
 import { CrearEvento } from '../organizer/CreateEvents';
@@ -36,7 +37,13 @@ export function AdminEventosList() {
       console.log('🔄 Cargando eventos...');
 
       // Llamada a la API
-      const data = await eventosAPI.getAll();
+      let data;
+      try {
+        data = await eventosAPI.getAll();
+      } catch (apiError) {
+        console.warn('⚠️ API no disponible, usando datos mock');
+        data = mockEventos;
+      }
       
       // Convertir fechas de string a Date si es necesario
       const eventosConFechas = data.map((evento: any) => ({
@@ -56,9 +63,10 @@ export function AdminEventosList() {
 
   // Filtrar eventos según búsqueda y sede
   const filteredEventos = eventos.filter((evento) => {
-    const matchesSearch = evento.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         evento.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         evento.ubicacion?.toLowerCase().includes(searchTerm.toLowerCase());
+    if (!evento) return false; // Validación de seguridad
+    const matchesSearch = (evento.titulo || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (evento.descripcion || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (evento.ubicacion || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSede = sedeFilter === 'todas' || evento.sede === sedeFilter;
     return matchesSearch && matchesSede;
   });

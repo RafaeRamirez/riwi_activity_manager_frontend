@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { codersAPI, eventosAPI } from '@/lib/api/apiService';
+import { mockEventos } from '@/lib/mockData';
 
 interface Coder {
     id: string;
@@ -29,11 +30,13 @@ interface CoderDetailModalProps {
 export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState(coder);
-    const [activeTab, setActiveTab] = useState<'info' | 'eventos' | 'historial'>('info');
+    const [activeTab, setActiveTab] = useState<'info' | 'eventos' | 'historial' | 'inscripcion'>('info');
     const [eventosInscritos, setEventosInscritos] = useState<EventoInscrito[]>([]);
     const [historial, setHistorial] = useState<EventoInscrito[]>([]);
     const [isLoadingEventos, setIsLoadingEventos] = useState(false);
     const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
+    const [isLoadingInscripcion, setIsLoadingInscripcion] = useState(false);
+    const [eventosDisponibles, setEventosDisponibles] = useState<any[]>([]);
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -48,6 +51,8 @@ export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalP
             cargarEventosInscritos();
         } else if (activeTab === 'historial') {
             cargarHistorial();
+        } else if (activeTab === 'inscripcion') {
+            cargarEventosDisponibles();
         }
     }, [activeTab]);
 
@@ -100,6 +105,37 @@ export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalP
         }
     };
 
+    const cargarEventosDisponibles = async () => {
+        try {
+            setIsLoadingInscripcion(true);
+
+            console.log('🔄 Cargando eventos disponibles para el coder:', coder.id);
+
+            // Obtener todos los eventos
+            const todosLosEventos = mockEventos;
+
+            // Obtener los eventos en los que ya está inscrito
+            const eventosInscritos = await codersAPI.getEventosInscritos(coder.id);
+            const eventosInscritosIds = eventosInscritos.map((e: any) => e.id);
+
+            // Filtrar eventos disponibles (futuros y no inscritos)
+            const eventosDisponibles = todosLosEventos
+                .filter((evento: any) => new Date(evento.fecha) >= new Date())
+                .filter((evento: any) => !eventosInscritosIds.includes(evento.id))
+                .map((evento: any) => ({
+                    ...evento,
+                    fecha: new Date(evento.fecha)
+                }));
+
+            setEventosDisponibles(eventosDisponibles);
+            console.log('✅ Eventos disponibles:', eventosDisponibles.length);
+        } catch (error) {
+            console.error('❌ Error cargando eventos disponibles:', error);
+        } finally {
+            setIsLoadingInscripcion(false);
+        }
+    };
+
     const handleSave = () => {
         onUpdate(formData);
         setIsEditing(false);
@@ -113,7 +149,7 @@ export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalP
         try {
             console.log('🔄 Desinscribiendo del evento:', eventoId);
 
-            await eventosAPI.desinscribir(eventoId, coder.id);
+            await codersAPI.desinscribirDelEvento(coder.id, eventoId);
 
             console.log('✅ Desinscrito exitosamente');
 
@@ -127,11 +163,34 @@ export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalP
         }
     };
 
+    const handleInscribir = async (eventoId: string, eventoTitulo: string) => {
+        if (!confirm(`¿Deseas inscribir a este coder en el evento "${eventoTitulo}"?`)) {
+            return;
+        }
+
+        try {
+            console.log('🔄 Inscribiendo en evento:', eventoId);
+
+            await codersAPI.inscribirEnEvento(coder.id, eventoId);
+
+            console.log('✅ Inscripción exitosa');
+
+            // Recargar eventos disponibles e inscritos
+            await cargarEventosDisponibles();
+            await cargarEventosInscritos();
+
+            alert('Coder inscrito exitosamente');
+        } catch (error) {
+            console.error('❌ Error al inscribir:', error);
+            alert('Error al inscribir en el evento');
+        }
+    };
+
     const asistencias = historial.filter(e => e.asistio).length;
     const faltas = historial.filter(e => !e.asistio).length;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
             <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
                 {/* Header */}
                 <div className="bg-linear-to-r from-riwi-green to-riwi-yellow p-6 text-white">
@@ -184,6 +243,15 @@ export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalP
                                 }`}
                         >
                             Eventos Inscritos ({eventosInscritos.length})
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('inscripcion')}
+                            className={`px-6 py-3 font-medium ${activeTab === 'inscripcion'
+                                    ? 'text-riwi-green border-b-2 border-riwi-green'
+                                    : 'text-gray-500 hover:text-gray-700'
+                                }`}
+                        >
+                            Inscribir en Eventos
                         </button>
                         <button
                             onClick={() => setActiveTab('historial')}
@@ -350,6 +418,60 @@ export function CoderDetailModal({ coder, onClose, onUpdate }: CoderDetailModalP
                                 ))
                             ) : (
                                 <p className="text-center text-gray-500 py-8">No está inscrito en ningún evento próximo</p>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Tab: Inscribir en Eventos */}
+                    {activeTab === 'inscripcion' && (
+                        <div className="space-y-3">
+                            {isLoadingInscripcion ? (
+                                <div className="text-center py-8">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-riwi-green mx-auto mb-2"></div>
+                                    <p className="text-sm text-gray-600">Cargando eventos disponibles...</p>
+                                </div>
+                            ) : eventosDisponibles.length > 0 ? (
+                                eventosDisponibles.map((evento) => (
+                                    <div
+                                        key={evento.id}
+                                        className="border border-gray-200 rounded-lg p-4"
+                                    >
+                                        <div className="flex items-start justify-between mb-2">
+                                            <div className="flex-1">
+                                                <h4 className="font-bold text-gray-900">{evento.titulo}</h4>
+                                                <p className="text-sm text-gray-600 mb-2">{evento.descripcion}</p>
+                                                <div className="flex flex-wrap gap-2 text-xs text-gray-500">
+                                                    <span className="bg-gray-100 px-2 py-1 rounded">
+                                                        📅 {evento.fecha.toLocaleDateString('es-ES', {
+                                                            day: '2-digit',
+                                                            month: 'long',
+                                                            year: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit'
+                                                        })}
+                                                    </span>
+                                                    <span className="bg-gray-100 px-2 py-1 rounded">
+                                                        📍 {evento.ubicacion || 'Online'}
+                                                    </span>
+                                                    <span className="bg-gray-100 px-2 py-1 rounded">
+                                                        {evento.modalidad}
+                                                    </span>
+                                                    <span className="bg-gray-100 px-2 py-1 rounded">
+                                                        👥 {evento.inscritos}/{evento.capacidad}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => handleInscribir(evento.id, evento.titulo)}
+                                            className="w-full p-2 bg-riwi-green hover:bg-green-300 text-white rounded-lg transition-colors font-medium"
+                                        >
+                                            + Inscribir
+                                        </button>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-center text-gray-500 py-8">No hay eventos disponibles para inscripción</p>
                             )}
                         </div>
                     )}

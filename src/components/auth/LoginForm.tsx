@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { authAPI } from '@/lib/api/apiService';
+import { mockUsers } from '@/lib/mockData';
 
 export function LoginForm() {
     const router = useRouter();
@@ -55,29 +56,88 @@ export function LoginForm() {
         try {
             console.log('🔄 Iniciando sesión...');
 
-            // Llamada al endpoint de login
-            const response = await authAPI.login(formData.email, formData.password);
+            // Buscar usuario en datos mock primero
+            const mockUser = mockUsers.find(
+                u => u.email === formData.email && u.password === formData.password
+            );
+
+            let response;
+            if (mockUser) {
+                console.log('📦 Usuario encontrado en datos mock');
+                response = mockUser;
+            } else {
+                console.log('🌐 Intentando con API...');
+                // Llamada al endpoint de login
+                response = await authAPI.login(formData.email, formData.password);
+            }
 
             console.log('✅ Login exitoso:', response);
 
-            // Guardar el token en localStorage
-            if (response.token) {
-                localStorage.setItem('token', response.token);
-                localStorage.setItem('user', JSON.stringify(response.user));
+            // Mapear los datos del backend a la estructura esperada del frontend
+            if (response.token && response) {
+                console.log('💾 Mapeando datos y guardando en localStorage');
+                
+                // Extraer iniciales del nombre completo
+                const getInitials = (fullName: string) => {
+                    return fullName
+                        .split(' ')
+                        .map(word => word[0])
+                        .join('')
+                        .toUpperCase()
+                        .slice(0, 2);
+                };
+
+                // Mapear respuesta del backend a estructura del frontend
+                const mappedUser = {
+                    id: String(response.personId || response.id || ''),
+                    email: response.email || '',
+                    nombre: response.fullName || response.nombre || '',
+                    role: (response.role || 'admin').toLowerCase() as 'coder' | 'organizer' | 'admin',
+                    sede: response.sede || 'Barranquilla',
+                    iniciales: getInitials(response.fullName || response.nombre || '')
+                };
+
+                console.log('📦 Usuario mapeado:', mappedUser);
+
+                const tokenToSave = response.token;
+                const userToSave = JSON.stringify(mappedUser);
+                
+                localStorage.setItem('token', tokenToSave);
+                localStorage.setItem('user', userToSave);
+                
+                // Pequeño delay para asegurar que se escribió
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                // Verificar que se guardó correctamente
+                const savedToken = localStorage.getItem('token');
+                const savedUser = localStorage.getItem('user');
+                console.log('✅ Token guardado:', savedToken ? 'SI - ' + savedToken.substring(0, 20) + '...' : 'NO');
+                console.log('✅ Usuario guardado:', savedUser ? 'SI' : 'NO');
+                
+                if (!savedToken || !savedUser) {
+                    throw new Error('No se pudo guardar la sesión en localStorage');
+                }
             }
 
             // Redirigir según el rol del usuario
-            const userRole = response.user?.rol || 'coder';
+            const userRole = response.role?.toLowerCase() || 'admin';
+            console.log('🎯 Role del usuario:', userRole);
 
-            switch (userRole.toLowerCase()) {
+            // Pequeño delay adicional antes de redirigir
+            await new Promise(resolve => setTimeout(resolve, 200));
+
+            switch (userRole) {
                 case 'admin':
+                    console.log('➡️ Redirigiendo a /admin');
                     router.push('/admin');
                     break;
-                case 'organizador':
-                    router.push('/organizador');
+                case 'organizer':
+                    console.log('➡️ Redirigiendo a /organizer');
+                    router.push('/organizer');
                     break;
                 case 'coder':
                 default:
+                    console.log('➡️ Redirigiendo a /coder');
                     router.push('/coder');
                     break;
             }

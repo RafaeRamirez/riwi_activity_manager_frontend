@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { eventosAPI } from '@/lib/api/apiService';
+import { mockEventos } from '@/lib/mockData';
 import { EditarEventoModal } from './EditarEventModal';
 import { InscritosModal } from './InscritosModal';
 import type { Event } from '@/types/event';
@@ -30,7 +31,13 @@ export function EventosManager({ sede }: EventosManagerProps) {
             console.log('🔄 Cargando eventos de', sede);
 
             // Llamada a la API filtrada por sede
-            const data = await eventosAPI.getAll(sede);
+            let data;
+            try {
+                data = await eventosAPI.getAll(sede);
+            } catch (apiError) {
+                console.warn('⚠️ API no disponible, usando datos mock');
+                data = mockEventos.filter(e => e.sede === sede);
+            }
 
             // Convertir fechas
             const eventosConFechas = data.map((evento: any) => ({

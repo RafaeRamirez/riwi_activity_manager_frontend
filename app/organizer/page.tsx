@@ -8,7 +8,7 @@ export default function OrganizadorPage() {
   const { user } = useAuth();
 
   return (
-    <ProtectedRoute allowedRoles={['organizador']}>
+    <ProtectedRoute allowedRoles={['organizer']}>
       <OrganizerDashboard
         userName={user?.sede || 'Sede'}
         userInitials={user?.iniciales || 'US'}

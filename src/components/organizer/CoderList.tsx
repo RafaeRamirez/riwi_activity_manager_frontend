@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { codersAPI } from '@/lib/api/apiService';
+import { mockUsers } from '@/lib/mockData';
 import { CoderDetailModal } from './CoderDetailModal';
 
 interface Coder {
@@ -38,7 +39,24 @@ export function CodersList({ sede }: CodersListProps) {
             console.log('🔄 Cargando coders de', sede);
 
             // Llamada a la API filtrada por sede
-            const data = await codersAPI.getAll(sede);
+            let data;
+            try {
+                data = await codersAPI.getAll(sede);
+            } catch (apiError) {
+                console.warn('⚠️ API no disponible, usando datos mock');
+                // Mapear mockUsers a estructura de coder
+                data = mockUsers
+                    .filter(u => u.sede === sede && u.role === 'coder')
+                    .map(u => ({
+                        id: u.personId?.toString(),
+                        nombre: u.fullName,
+                        email: u.email,
+                        sede: u.sede || sede,
+                        cohorte: 'C1-2025',
+                        fechaIngreso: new Date('2024-01-15'),
+                        telefono: '3001234567'
+                    }));
+            }
 
             // Convertir fechas
             const codersConFechas = data.map((coder: any) => ({
@@ -56,11 +74,12 @@ export function CodersList({ sede }: CodersListProps) {
         }
     };
 
-    const filteredCoders = coders.filter(coder =>
-        coder.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        coder.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        coder.cohorte.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredCoders = coders.filter(coder => {
+        if (!coder) return false; // Validación de seguridad
+        return (coder.nombre || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+               (coder.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+               (coder.cohorte || '').toLowerCase().includes(searchTerm.toLowerCase());
+    });
 
     const handleDeleteCoder = async (coderId: string, nombreCoder: string) => {
         if (!confirm(`¿Estás seguro de eliminar a ${nombreCoder} de la base de datos?`)) {

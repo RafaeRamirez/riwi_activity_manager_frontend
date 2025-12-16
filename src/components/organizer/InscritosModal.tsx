@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { eventosAPI } from '@/lib/api/apiService';
+import { mockInscritos } from '@/lib/mockData';
 import type { Event } from '@/types/event';
 
 interface Inscrito {
@@ -40,7 +41,13 @@ export function InscritosModal({ evento, onClose, onReload }: InscritosModalProp
             console.log('🔄 Cargando inscritos del evento:', evento.id);
 
             // Llamada a la API
-            const data = await eventosAPI.getInscritos(evento.id);
+            let data;
+            try {
+                data = await eventosAPI.getInscritos(evento.id);
+            } catch (apiError) {
+                console.warn('⚠️ API no disponible, usando datos mock');
+                data = mockInscritos;
+            }
 
             // Convertir fechas
             const inscritosConFechas = data.map((inscrito: any) => ({
@@ -87,7 +94,7 @@ export function InscritosModal({ evento, onClose, onReload }: InscritosModalProp
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
             <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
                 {/* Header */}
                 <div className="bg-riwi-green p-6 text-white">

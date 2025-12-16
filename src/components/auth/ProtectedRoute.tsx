@@ -1,34 +1,38 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRoles?: ('coder' | 'organizador' | 'admin')[];
+  allowedRoles?: ('coder' | 'organizer' | 'admin')[];
 }
 
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isHydrated } = useAuth();
   const router = useRouter();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (isHydrated && !isLoading) {
       // Si no hay usuario, redirigir a login
       if (!user) {
+        console.log('❌ No hay usuario, redirigiendo a login');
         router.push('/login');
+        setIsCheckingAuth(false);
         return;
       }
 
       // Si hay roles permitidos y el usuario no tiene el rol adecuado
-      if (allowedRoles && !allowedRoles.includes(user.rol)) {
+      if (allowedRoles && !allowedRoles.includes(user.role)) {
         // Redirigir según su rol
-        switch (user.rol) {
+        console.log('⚠️ Usuario sin rol permitido, redirigiendo. User role:', user.role, 'Allowed roles:', allowedRoles);
+        switch (user.role) {
           case 'admin':
             router.push('/admin');
             break;
-          case 'organizador':
+          case 'organizer':
             router.push('/organizer');
             break;
           case 'coder':
@@ -36,12 +40,17 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
             router.push('/coder');
             break;
         }
+        setIsCheckingAuth(false);
+        return;
       }
+
+      // Usuario autenticado y con permisos
+      setIsCheckingAuth(false);
     }
-  }, [user, isLoading, allowedRoles, router]);
+  }, [user, isLoading, isHydrated, allowedRoles, router]);
 
   // Mostrar loading mientras verifica
-  if (isLoading) {
+  if (!isHydrated || isLoading || isCheckingAuth) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
@@ -58,7 +67,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
   }
 
   // Si hay roles permitidos y el usuario no tiene el rol adecuado
-  if (allowedRoles && !allowedRoles.includes(user.rol)) {
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
     return null;
   }
 

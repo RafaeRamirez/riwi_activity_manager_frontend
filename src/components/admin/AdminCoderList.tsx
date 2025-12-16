@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { codersAPI } from '@/lib/api/apiService';
+import { mockUsers } from '@/lib/mockData';
 import { CoderFormModal } from './CoderFormModal';
 import { CoderDetailModal } from '../organizer/CoderDetailModal';
 
@@ -24,11 +25,19 @@ export function AdminCodersList() {
   const [coderEditando, setCoderEditando] = useState<Coder | null>(null);
   const [coderDetalle, setCoderDetalle] = useState<Coder | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
 
   // Cargar coders al montar el componente
   useEffect(() => {
     cargarCoders();
   }, []);
+
+  // Hacer scroll hacia arriba cuando cambia el filtro
+  useEffect(() => {
+    if (tableRef.current) {
+      tableRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [searchTerm, sedeFilter]);
 
   // Función para cargar coders desde la API
   const cargarCoders = async () => {
@@ -39,8 +48,25 @@ export function AdminCodersList() {
       console.log('🔄 Cargando coders...');
 
       // Llamada a la API
-      const data = await codersAPI.getAll();
-      
+      let data;
+      try {
+        data = await codersAPI.getAll();
+      } catch (apiError) {
+        console.warn('⚠️ API no disponible, usando datos mock');
+        // Mapear mockUsers a estructura de coder, filtrando solo coders
+        data = mockUsers
+          .filter(u => u.role === 'coder')
+          .map(u => ({
+            id: u.personId?.toString(),
+            nombre: u.fullName,
+            email: u.email,
+            sede: u.sede || 'Barranquilla',
+            cohorte: 'C3-2025',
+            fechaIngreso: new Date('2024-01-15'),
+            telefono: '3001234567'
+          }));
+      }
+
       // Convertir fechas de string a Date si es necesario
       const codersConFechas = data.map((coder: any) => ({
         ...coder,
@@ -59,10 +85,19 @@ export function AdminCodersList() {
 
   // Filtrar coders según búsqueda y sede
   const filteredCoders = coders.filter(coder => {
-    const matchesSearch = coder.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         coder.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         coder.cohorte.toLowerCase().includes(searchTerm.toLowerCase());
+    if (!coder) return false; // Validación de seguridad
+
+    // Filtro de sede
     const matchesSede = sedeFilter === 'todas' || coder.sede === sedeFilter;
+
+    // Filtro de búsqueda - solo aplicar si hay texto en searchTerm
+    let matchesSearch = true;
+    if (searchTerm.trim() !== '') {
+      matchesSearch = (coder.nombre || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (coder.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (coder.cohorte || '').toLowerCase().includes(searchTerm.toLowerCase());
+    }
+
     return matchesSearch && matchesSede;
   });
 
@@ -79,7 +114,7 @@ export function AdminCodersList() {
       await codersAPI.delete(coderId);
 
       console.log('✅ Coder eliminado exitosamente');
-      
+
       // Recargar lista de coders
       await cargarCoders();
 
@@ -99,7 +134,7 @@ export function AdminCodersList() {
       await codersAPI.create(newCoder);
 
       console.log('✅ Coder creado exitosamente');
-      
+
       // Recargar lista de coders
       await cargarCoders();
 
@@ -109,7 +144,7 @@ export function AdminCodersList() {
       alert('Coder creado exitosamente');
     } catch (error: any) {
       console.error('❌ Error al crear coder:', error);
-      
+
       // Manejar errores específicos
       if (error.message?.includes('email')) {
         alert('El email ya está registrado.');
@@ -128,7 +163,7 @@ export function AdminCodersList() {
       await codersAPI.update(updatedCoder.id, updatedCoder);
 
       console.log('✅ Coder actualizado exitosamente');
-      
+
       // Recargar lista de coders
       await cargarCoders();
 
@@ -162,17 +197,17 @@ export function AdminCodersList() {
     return (
       <div className="bg-white rounded-lg shadow-sm p-8 text-center">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <svg 
-            className="w-12 h-12 text-red-500 mx-auto mb-4" 
-            fill="none" 
-            stroke="currentColor" 
+          <svg
+            className="w-12 h-12 text-red-500 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
           <h3 className="text-lg font-bold text-red-900 mb-2">Error al cargar</h3>
@@ -230,8 +265,11 @@ export function AdminCodersList() {
         </div>
 
         {/* Tabla de coders */}
-        <div className="overflow-x-auto">
-          <table className="w-full">
+        <div className="overflow-x-auto" ref={tableRef} key={`${sedeFilter}-${searchTerm}`}>
+          <div className="text-sm text-gray-600 mb-2 px-4">
+            Mostrando {filteredCoders.length} de {coders.length} coders
+          </div>
+          <table className="w-full" key={`table-${sedeFilter}-${searchTerm}`}>
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Nombre</th>

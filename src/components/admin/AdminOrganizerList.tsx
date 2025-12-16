@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { organizadoresAPI } from '@/lib/api/apiService';
+import { mockOrganizadores } from '@/lib/mockData';
 import { OrganizadorFormModal } from './OrganizadorFormModal';
 
 interface Organizador {
@@ -37,7 +38,13 @@ export function AdminOrganizadoresList() {
       console.log('🔄 Cargando organizadores...');
 
       // Llamada a la API
-      const data = await organizadoresAPI.getAll();
+      let data;
+      try {
+        data = await organizadoresAPI.getAll();
+      } catch (apiError) {
+        console.warn('⚠️ API no disponible, usando datos mock');
+        data = mockOrganizadores;
+      }
       
       // Convertir fechas de string a Date si es necesario
       const organizadoresConFechas = data.map((org: any) => ({

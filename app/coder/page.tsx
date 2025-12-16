@@ -8,6 +8,8 @@ import type { Event } from '@/types/event';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/hooks/useAuth';
 
+import { inscripcionesService } from '@/lib/inscripcionesService';
+
 export default function CoderPage() {
     const [eventos, setEventos] = useState<Event[]>([]);
     const [eventosInscritos, setEventosInscritos] = useState<string[]>([]);
@@ -17,9 +19,30 @@ export default function CoderPage() {
     // TODO: Reemplazar con el ID del usuario autenticado (del contexto/sesión)
     const CURRENT_USER_ID = 'USER_ID_FROM_AUTH'; // Obtener de tu sistema de auth
     const { user } = useAuth();
-    // Cargar datos iniciales
+    // Cargar datos iniciales API
     useEffect(() => {
         cargarDatosIniciales();
+    }, []);
+
+    // Cargar datos iniciales prueba
+    useEffect(() => {
+        const cargarDatos = async () => {
+            try {
+                const [eventosData, inscripcionesData] = await Promise.all([
+                    inscripcionesService.getEventos(),
+                    inscripcionesService.getInscripciones()
+                ]);
+
+                setEventos(eventosData);
+                setEventosInscritos(inscripcionesData);
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        cargarDatos();
     }, []);
 
     const cargarDatosIniciales = async () => {
@@ -33,10 +56,16 @@ export default function CoderPage() {
                 codersAPI.getEventosInscritos(CURRENT_USER_ID)
             ]);
 
+            // Convertir fechas a Date objects para que EventList las procese correctamente
+            const eventosConFechas = eventosData.map((evento: any) => ({
+                ...evento,
+                fecha: new Date(evento.fecha)
+            }));
+
             // Extraer solo los IDs de los eventos inscritos
             const inscritosIds = inscripcionesData.map((evento: Event) => evento.id);
 
-            setEventos(eventosData);
+            setEventos(eventosConFechas);
             setEventosInscritos(inscritosIds);
 
             console.log('✅ Datos cargados exitosamente');
@@ -163,7 +192,7 @@ export default function CoderPage() {
         <ProtectedRoute allowedRoles={['coder']}>
             <EventosLayout
                 eventos={eventos}
-                userName={user?.sede || 'Sede'}
+                userName={user?.nombre || 'Usuario'}
                 userInitials={user?.iniciales || 'US'}
                 userRole="coder"
                 eventosInscritosIniciales={eventosInscritos}

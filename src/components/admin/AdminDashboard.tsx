@@ -1,7 +1,11 @@
 // components/admin/AdminDashboard.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { codersAPI } from '@/lib/api/apiService';
+import { eventosAPI } from '@/lib/api/apiService';
+import { organizadoresAPI } from '@/lib/api/apiService';
+import { mockUsers, mockEventos, mockOrganizadores } from '@/lib/mockData';
 import { UserHeader } from '../events/UserHeader';
 import { AdminCodersList } from './AdminCoderList';
 import { AdminOrganizadoresList } from './AdminOrganizerList';
@@ -33,6 +37,64 @@ export function AdminDashboard({
         totalOrganizadores: 0,
         totalEventos: 0,
     });
+    const [isLoadingStats, setIsLoadingStats] = useState(true);
+
+    useEffect(() => {
+        cargarEstadisticas();
+    }, []);
+
+    const cargarEstadisticas = async () => {
+        try {
+            setIsLoadingStats(true);
+            console.log('📊 Cargando estadísticas...');
+
+            let coders = mockUsers.filter(u => u.role === 'coder');
+            let organizadores = mockOrganizadores;
+            let eventos = mockEventos;
+
+            // Intentar cargar datos reales de la API
+            try {
+                coders = await codersAPI.getAll();
+            } catch (e) {
+                console.warn('⚠️ No se pudieron obtener coders de API, usando mock');
+                coders = mockUsers.filter(u => u.role === 'coder');
+            }
+
+            try {
+                organizadores = await organizadoresAPI.getAll();
+            } catch (e) {
+                console.warn('⚠️ No se pudieron obtener organizadores de API, usando mock');
+            }
+
+            try {
+                eventos = await eventosAPI.getAll();
+            } catch (e) {
+                console.warn('⚠️ No se pudieron obtener eventos de API, usando mock');
+            }
+
+            setStats({
+                totalCoders: coders.length,
+                totalOrganizadores: organizadores.length,
+                totalEventos: eventos.length,
+            });
+
+            console.log('✅ Estadísticas cargadas:', {
+                totalCoders: coders.length,
+                totalOrganizadores: organizadores.length,
+                totalEventos: eventos.length,
+            });
+        } catch (error) {
+            console.error('❌ Error cargando estadísticas:', error);
+            // Usar valores por defecto
+            setStats({
+                totalCoders: mockUsers.length,
+                totalOrganizadores: mockOrganizadores.length,
+                totalEventos: mockEventos.length,
+            });
+        } finally {
+            setIsLoadingStats(false);
+        }
+    };
 
     const handleSectionClick = (section: Section) => {
         setActiveSection(activeSection === section ? null : section);
